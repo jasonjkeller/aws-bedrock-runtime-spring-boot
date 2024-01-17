@@ -21,11 +21,15 @@ The Spring service will run on http://localhost:8081/
 
 If you navigate to http://localhost:8081/prompt-form you will be able to select the invocation type and submit a prompt to a model via the AWS Bedrock Runtime. 
 
-Currently, this example only uses [Anthropic's Claude](https://aws.amazon.com/bedrock/claude/) model, but it could easily be extended to support other models (see [InvokeModel.java](src%2Fmain%2Fjava%2Fcom%2Fdemo%2Fawsbedrockspringboot%2Fawsbedrockruntime%2FInvokeModel.java) for other model implementations). This model only supports text input and text output.
+![ui.png](src%2Fmain%2Fresources%2Fstatic%2Fui.png)
+
+Currently, this example only uses [Anthropic's Claude](https://aws.amazon.com/bedrock/claude/) model, but it could easily be extended to support other models (see [InvokeModel.java](src%2Fmain%2Fjava%2Fcom%2Fdemo%2Fawsbedrockspringboot%2Fawsbedrockruntime%2FInvokeModel.java) and [InvokeModelAsync.java](src%2Fmain%2Fjava%2Fcom%2Fdemo%2Fawsbedrockspringboot%2Fawsbedrockruntime%2FInvokeModelAsync.java) for other model implementations). This model only supports text input and text output.
 
 The following invocation types are supported by Amazon Bedrock Runtime:
 * [InvokeModel](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModel.html)
 * [InvokeModelWithResponseStream](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModelWithResponseStream.html)
+
+There is a synchronous [BedrockRuntimeClient](https://sdk.amazonaws.com/java/api/latest/software/amazon/awssdk/services/bedrockruntime/BedrockRuntimeClient.html) as well as an asynchronous [BedrockRuntimeAsyncClient](https://sdk.amazonaws.com/java/api/latest/software/amazon/awssdk/services/bedrockruntime/BedrockRuntimeAsyncClient.html).
 
 ## Useful Documentation
 

@@ -2,7 +2,6 @@ package com.demo.awsbedrockspringboot.awsbedrockruntime;
 
 import software.amazon.awssdk.services.bedrockruntime.model.BedrockRuntimeException;
 
-import static com.demo.awsbedrockspringboot.awsbedrockruntime.InvokeModel.invokeClaude;
 
 /**
  * Demonstrates the invocation of the following models:
@@ -15,6 +14,7 @@ public class AwsBedrockRuntimeHelper {
     public static final String DEFAULT_PROMPT = "What is a large-language model?";
 
     public static final String INVOKE_MODEL = "InvokeModel";
+    public static final String INVOKE_MODEL_ASYNC = "InvokeModel (async)";
     public static final String INVOKE_MODEL_WITH_RESPONSE_STREAM = "InvokeModelWithResponseStream";
     public static final String DEFAULT_INVOKE_TYPE = INVOKE_MODEL;
     public static final String CLAUDE = "anthropic.claude-v2";
@@ -23,6 +23,13 @@ public class AwsBedrockRuntimeHelper {
 //    public static final String STABLE_DIFFUSION = "stability.stable-diffusion-xl";
 //    public static final String TITAN_IMAGE = "amazon.titan-image-generator-v1";
 
+    /**
+     * InvokeModel using synchronous BedrockRuntimeClient.
+     *
+     * @param modelId The model that is being prompted
+     * @param prompt The prompt to be made
+     * @return response from prompt
+     */
     public static String invoke(String modelId, String prompt) {
         System.out.println("\n" + new String(new char[88]).replace("\0", "-"));
         System.out.println("Invoking: " + modelId);
@@ -30,7 +37,7 @@ public class AwsBedrockRuntimeHelper {
 
         try {
             if (modelId.equals(CLAUDE)) {
-                return invokeClaude(prompt);
+                return InvokeModel.invokeClaude(prompt);
             }
             throw new IllegalStateException("Unexpected value: " + modelId);
         } catch (BedrockRuntimeException e) {
@@ -39,6 +46,36 @@ public class AwsBedrockRuntimeHelper {
         }
     }
 
+    /**
+     * InvokeModel using asynchronous BedrockRuntimeAsyncClient.
+     *
+     * @param modelId The model that is being prompted
+     * @param prompt The prompt to be made
+     * @return response from prompt
+     */
+    public static String invokeAsync(String modelId, String prompt) {
+        System.out.println("\n" + new String(new char[88]).replace("\0", "-"));
+        System.out.println("Invoking: " + modelId);
+        System.out.println("Prompt: " + prompt);
+
+        try {
+            if (modelId.equals(CLAUDE)) {
+                return InvokeModelAsync.invokeClaude(prompt);
+            }
+            throw new IllegalStateException("Unexpected value: " + modelId);
+        } catch (BedrockRuntimeException e) {
+            System.out.println("Couldn't invoke model " + modelId + ": " + e.getMessage());
+            throw e;
+        }
+    }
+
+    /**
+     * InvokeModelWithResponseStream using asynchronous BedrockRuntimeAsyncClient.
+     *
+     * @param modelId The model that is being prompted
+     * @param prompt The prompt to be made
+     * @return response from prompt
+     */
     public static String invokeWithResponseStream(String modelId, String prompt) {
         System.out.println(new String(new char[88]).replace("\0", "-"));
         System.out.printf("Invoking %s with response stream%n", modelId);
