@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>AWS Bedrock Runtime Response</title>
+</head>
+<body>
+<div style="text-align: center;">
+    <h1>AWS Bedrock Runtime Response</h1>
+    <p th:text="'Prompt: ' + ${prompt.prompt}"/>
+    <p th:text="'Response: ' + ${response}"/>
+    <a href="/prompt-form">Submit another prompt</a>
+</div>
+</body>
+</html>

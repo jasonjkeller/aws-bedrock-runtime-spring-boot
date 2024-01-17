@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>AI Prompt</title>
+</head>
+<body>
+<div style="text-align: center;">
+    <h1>AWS Bedrock Runtime Prompt</h1>
+    <form action="#" th:action="@{/submit-prompt-form}" method="post" th:object="${prompt}">
+        <label>Submit AWS Bedrock Runtime prompt:
+            <input type="text" th:field="*{prompt}" />
+        </label><br/>
+        <label>Select invoke type:
+            <select th:field="*{invokeType}">
+                <option th:each="p : ${invokeTypeList}" th:value="${p}" th:text="${p}" />
+            </select>
+        </label><br/>
+        <button type="submit">Submit</button>
+    </form>
+</div>
+</body>
+</html>
