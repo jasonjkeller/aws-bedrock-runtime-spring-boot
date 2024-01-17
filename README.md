@@ -12,7 +12,7 @@ Simple Spring service with an endpoint for submitting prompts to an LLM via the 
     aws_secret_access_key=...
     aws_session_token=...
     ```
-  You can obtain the required credentials numerous ways but a quick and easy method is to select the "Command line or programmatic access" option when signing in to the `java-agent-dev` account, which will display the credentials.
+  You can obtain the required credentials numerous ways but a quick and easy method is to select the "Command line or programmatic access" option when signing in to the AWS account, which will display the credentials.
   ![aws-creds.png](src%2Fmain%2Fresources%2Fstatic%2Faws-creds.png)
 
 ## Usage
