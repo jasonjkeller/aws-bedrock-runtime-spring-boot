@@ -8,7 +8,8 @@
 <div style="text-align: center;">
     <h1>AWS Bedrock Runtime Response</h1>
     <p th:text="'Prompt: ' + ${prompt.prompt}"/>
-    <p th:text="'Response: ' + ${response}"/>
+    <p th:utext="'Response: ' + ${response}"/>
+    <img th:src="${imageBytes}"/><br/>
     <a href="/prompt-form">Submit another prompt</a>
 </div>
 </body>
