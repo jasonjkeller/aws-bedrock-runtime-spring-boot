@@ -54,11 +54,7 @@ public class InvokeModel {
 
         JSONObject responseBody = new JSONObject(response.body().asUtf8String());
 
-        String generatedText = responseBody.getString("completion");
-        System.out.print("Generated text:");
-        System.out.println(generatedText);
-
-        return generatedText;
+        return responseBody.getString("completion");
     }
 
     /**

@@ -16,6 +16,11 @@
                 <option th:each="p : ${invokeTypeList}" th:value="${p}" th:text="${p}" />
             </select>
         </label><br/>
+        <label>Select model name:
+            <select th:field="*{modelName}">
+                <option th:each="p : ${modelNameList}" th:value="${p}" th:text="${p}" />
+            </select>
+        </label><br/>
         <button type="submit">Submit</button>
     </form>
 </div>

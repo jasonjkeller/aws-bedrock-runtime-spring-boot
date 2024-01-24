@@ -64,8 +64,6 @@ public class InvokeModelAsync {
             InvokeModelResponse response = completableFuture.get();
             JSONObject responseBody = new JSONObject(response.body().asUtf8String());
             generatedText = responseBody.getString("completion");
-            System.out.print("Generated text:");
-            System.out.println(generatedText);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             System.err.println(e.getMessage());

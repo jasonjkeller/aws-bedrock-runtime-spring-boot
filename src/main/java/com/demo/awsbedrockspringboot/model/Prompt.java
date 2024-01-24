@@ -1,6 +1,7 @@
 package com.demo.awsbedrockspringboot.model;
 
 import static com.demo.awsbedrockspringboot.awsbedrockruntime.AwsBedrockRuntimeHelper.DEFAULT_INVOKE_TYPE;
+import static com.demo.awsbedrockspringboot.awsbedrockruntime.AwsBedrockRuntimeHelper.DEFAULT_MODEL_NAME;
 import static com.demo.awsbedrockspringboot.awsbedrockruntime.AwsBedrockRuntimeHelper.DEFAULT_PROMPT;
 
 /**
@@ -9,6 +10,7 @@ import static com.demo.awsbedrockspringboot.awsbedrockruntime.AwsBedrockRuntimeH
 public class Prompt {
     private String prompt = DEFAULT_PROMPT;
     private String invokeType = DEFAULT_INVOKE_TYPE;
+    private String modelName = DEFAULT_MODEL_NAME;
 
     public String getPrompt() {
         return prompt;
@@ -24,6 +26,14 @@ public class Prompt {
 
     public void setInvokeType(String invokeType) {
         this.invokeType = invokeType;
+    }
+
+    public String getModelName() {
+        return modelName;
+    }
+
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
     }
 
     @Override
