@@ -22,6 +22,8 @@ public class AwsBedrockRuntimeHelper {
     public static final String LLAMA2 = "meta.llama2-13b-chat-v1";
     public static final String STABLE_DIFFUSION = "stability.stable-diffusion-xl";
     public static final String TITAN_IMAGE = "amazon.titan-image-generator-v1";
+    public static final String TITAN_EMBED_TEXT = "amazon.titan-embed-text-v1";
+    public static final String TITAN_EMBED_IMAGE = "amazon.titan-embed-image-v1";
     public static final String DEFAULT_MODEL_NAME = CLAUDE;
 
     /**
@@ -36,23 +38,7 @@ public class AwsBedrockRuntimeHelper {
         System.out.println("Invoking: " + modelId);
         System.out.println("Prompt: " + prompt);
 
-        try {
-            if (modelId.equals(CLAUDE)) {
-                return InvokeModel.invokeClaude(prompt);
-            } else if (modelId.equals(JURASSIC2)) {
-                return InvokeModel.invokeJurassic2(prompt);
-            } else if (modelId.equals(LLAMA2)) {
-                return InvokeModel.invokeLlama2(prompt);
-            } else if (modelId.equals(STABLE_DIFFUSION)) {
-                return InvokeModel.invokeStableDiffusion(prompt, 0, null);
-            } else if (modelId.equals(TITAN_IMAGE)) {
-                return InvokeModel.invokeTitanImage(prompt, 0);
-            }
-            throw new IllegalStateException("Unexpected value: " + modelId);
-        } catch (BedrockRuntimeException e) {
-            System.out.println("Couldn't invoke model " + modelId + ": " + e.getMessage());
-            throw e;
-        }
+        return doInvoke(modelId, prompt, false);
     }
 
     /**
@@ -67,23 +53,7 @@ public class AwsBedrockRuntimeHelper {
         System.out.println("Invoking: " + modelId);
         System.out.println("Prompt: " + prompt);
 
-        try {
-            if (modelId.equals(CLAUDE)) {
-                return InvokeModelAsync.invokeClaude(prompt);
-            } else if (modelId.equals(JURASSIC2)) {
-                return InvokeModelAsync.invokeJurassic2(prompt);
-            } else if (modelId.equals(LLAMA2)) {
-                return InvokeModelAsync.invokeLlama2(prompt);
-            } else if (modelId.equals(STABLE_DIFFUSION)) {
-                return InvokeModelAsync.invokeStableDiffusion(prompt, 0, null);
-            } else if (modelId.equals(TITAN_IMAGE)) {
-                return InvokeModelAsync.invokeTitanImage(prompt, 0);
-            }
-            throw new IllegalStateException("Unexpected value: " + modelId);
-        } catch (BedrockRuntimeException e) {
-            System.out.println("Couldn't invoke model " + modelId + ": " + e.getMessage());
-            throw e;
-        }
+        return doInvoke(modelId, prompt, true);
     }
 
     /**
@@ -108,4 +78,27 @@ public class AwsBedrockRuntimeHelper {
         }
     }
 
+    private static String doInvoke(String modelId, String prompt, Boolean async) {
+        try {
+            if (modelId.equals(CLAUDE)) {
+                return InvokeModel.invokeClaude(prompt, async);
+            } else if (modelId.equals(JURASSIC2)) {
+                return InvokeModel.invokeJurassic2(prompt, async);
+            } else if (modelId.equals(LLAMA2)) {
+                return InvokeModel.invokeLlama2(prompt, async);
+            } else if (modelId.equals(STABLE_DIFFUSION)) {
+                return InvokeModel.invokeStableDiffusion(prompt, 0, null, async);
+            } else if (modelId.equals(TITAN_IMAGE)) {
+                return InvokeModel.invokeTitanImage(prompt, 0, async);
+            } else if (modelId.equals(TITAN_EMBED_TEXT)) {
+                return InvokeModel.invokeTitanEmbedText(prompt, async);
+            } else if (modelId.equals(TITAN_EMBED_IMAGE)) {
+                return InvokeModel.invokeTitanEmbedImage(prompt, async);
+            }
+            throw new IllegalStateException("Unexpected value: " + modelId);
+        } catch (BedrockRuntimeException e) {
+            System.out.println("Couldn't invoke model " + modelId + ": " + e.getMessage());
+            throw e;
+        }
+    }
 }

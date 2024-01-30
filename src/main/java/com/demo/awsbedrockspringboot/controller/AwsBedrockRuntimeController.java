@@ -18,6 +18,8 @@ import static com.demo.awsbedrockspringboot.awsbedrockruntime.AwsBedrockRuntimeH
 import static com.demo.awsbedrockspringboot.awsbedrockruntime.AwsBedrockRuntimeHelper.JURASSIC2;
 import static com.demo.awsbedrockspringboot.awsbedrockruntime.AwsBedrockRuntimeHelper.LLAMA2;
 import static com.demo.awsbedrockspringboot.awsbedrockruntime.AwsBedrockRuntimeHelper.STABLE_DIFFUSION;
+import static com.demo.awsbedrockspringboot.awsbedrockruntime.AwsBedrockRuntimeHelper.TITAN_EMBED_IMAGE;
+import static com.demo.awsbedrockspringboot.awsbedrockruntime.AwsBedrockRuntimeHelper.TITAN_EMBED_TEXT;
 import static com.demo.awsbedrockspringboot.awsbedrockruntime.AwsBedrockRuntimeHelper.TITAN_IMAGE;
 
 /**
@@ -40,7 +42,7 @@ public class AwsBedrockRuntimeController {
 
         List<String> invokeTypeList = Arrays.asList(INVOKE_MODEL, INVOKE_MODEL_ASYNC, INVOKE_MODEL_WITH_RESPONSE_STREAM);
         model.addAttribute("invokeTypeList", invokeTypeList);
-        List<String> modelNameList = Arrays.asList(CLAUDE, JURASSIC2, LLAMA2, STABLE_DIFFUSION, TITAN_IMAGE);
+        List<String> modelNameList = Arrays.asList(CLAUDE, JURASSIC2, LLAMA2, STABLE_DIFFUSION, TITAN_IMAGE, TITAN_EMBED_TEXT, TITAN_EMBED_IMAGE);
         model.addAttribute("modelNameList", modelNameList);
 
         return "prompt-form";
