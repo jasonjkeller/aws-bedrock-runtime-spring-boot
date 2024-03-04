@@ -1,7 +1,14 @@
 package com.demo.awsbedrockspringboot.controller;
 
 import com.demo.awsbedrockspringboot.awsbedrockruntime.AwsBedrockRuntimeHelper;
+import com.demo.awsbedrockspringboot.llm.models.AI21Labs;
+import com.demo.awsbedrockspringboot.llm.models.Amazon;
+import com.demo.awsbedrockspringboot.llm.models.Anthropic;
+import com.demo.awsbedrockspringboot.llm.models.Cohere;
+import com.demo.awsbedrockspringboot.llm.models.Meta;
+import com.demo.awsbedrockspringboot.llm.models.StabilityAI;
 import com.demo.awsbedrockspringboot.model.Prompt;
+import com.newrelic.api.agent.NewRelic;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,17 +17,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
-import static com.demo.awsbedrockspringboot.awsbedrockruntime.AwsBedrockRuntimeHelper.CLAUDE;
 import static com.demo.awsbedrockspringboot.awsbedrockruntime.AwsBedrockRuntimeHelper.INVOKE_MODEL;
 import static com.demo.awsbedrockspringboot.awsbedrockruntime.AwsBedrockRuntimeHelper.INVOKE_MODEL_ASYNC;
 import static com.demo.awsbedrockspringboot.awsbedrockruntime.AwsBedrockRuntimeHelper.INVOKE_MODEL_WITH_RESPONSE_STREAM;
-import static com.demo.awsbedrockspringboot.awsbedrockruntime.AwsBedrockRuntimeHelper.JURASSIC2;
-import static com.demo.awsbedrockspringboot.awsbedrockruntime.AwsBedrockRuntimeHelper.LLAMA2;
-import static com.demo.awsbedrockspringboot.awsbedrockruntime.AwsBedrockRuntimeHelper.STABLE_DIFFUSION;
-import static com.demo.awsbedrockspringboot.awsbedrockruntime.AwsBedrockRuntimeHelper.TITAN_EMBED_IMAGE;
-import static com.demo.awsbedrockspringboot.awsbedrockruntime.AwsBedrockRuntimeHelper.TITAN_EMBED_TEXT;
-import static com.demo.awsbedrockspringboot.awsbedrockruntime.AwsBedrockRuntimeHelper.TITAN_IMAGE;
 
 /**
  * Controller to interact with AWS Bedrock Runtime.
@@ -42,7 +43,28 @@ public class AwsBedrockRuntimeController {
 
         List<String> invokeTypeList = Arrays.asList(INVOKE_MODEL, INVOKE_MODEL_ASYNC, INVOKE_MODEL_WITH_RESPONSE_STREAM);
         model.addAttribute("invokeTypeList", invokeTypeList);
-        List<String> modelNameList = Arrays.asList(CLAUDE, JURASSIC2, LLAMA2, STABLE_DIFFUSION, TITAN_IMAGE, TITAN_EMBED_TEXT, TITAN_EMBED_IMAGE);
+
+        List<String> modelNameList = Arrays.asList(
+                AI21Labs.JURASSIC_2_ULTRA_V1,
+                AI21Labs.JURASSIC_2_MID_V1,
+                Amazon.TITAN_IMAGE_GENERATOR_G1,
+                Amazon.TITAN_EMBEDDINGS_G1_TEXT,
+                Amazon.TITAN_MULTIMODAL_EMBEDDINGS_G1,
+                Amazon.TITAN_TEXT_G1_EXPRESS,
+                Amazon.TITAN_TEXT_G1_LITE,
+                Anthropic.CLAUDE_INSTANT_V_1,
+                Anthropic.CLAUDE_V_2,
+                Anthropic.CLAUDE_V_2_1,
+                Cohere.COMMAND,
+                Cohere.COMMAND_LIGHT,
+                Cohere.EMBED_ENGLISH,
+                Cohere.EMBED_MULTLINGUAL,
+                Meta.LLAMA_2_CHAT_13_B,
+                Meta.LLAMA_2_CHAT_70_B,
+                Meta.LLAMA_2_13_B,
+                Meta.LLAMA_2_70_B,
+                StabilityAI.SDXL_V_1_0
+        );
         model.addAttribute("modelNameList", modelNameList);
 
         return "prompt-form";
@@ -52,12 +74,20 @@ public class AwsBedrockRuntimeController {
      * Displays the response from the AWS Bedrock Runtime prompt.
      *
      * @param prompt The prompt to be made
-     * @param model Model for UI templates
+     * @param model  Model for UI templates
      * @return the prompt-response view
      */
     @PostMapping("/submit-prompt-form")
     public String submitForm(@ModelAttribute Prompt prompt, Model model) {
         model.addAttribute("prompt", prompt);
+
+        // Add some attributes to verify that those with the llm. prefix get added to NR LlmEvents
+        NewRelic.addCustomParameter("no-llm", true);
+        NewRelic.addCustomParameter("llm.test-number", 2);
+        NewRelic.addCustomParameter("llm.test-string", "Bye");
+        NewRelic.addCustomParameter("llm.test-boolean", false);
+        // llm.conversation_id can be used to group conversations in NR APM
+        NewRelic.addCustomParameter("llm.conversation_id", "submit-prompt-form:" + UUID.randomUUID());
 
         String response = switch (prompt.getInvokeType()) {
             case INVOKE_MODEL -> AwsBedrockRuntimeHelper.invoke(prompt.getModelName(), prompt.getPrompt());
@@ -72,8 +102,8 @@ public class AwsBedrockRuntimeController {
         String imageResponse = IMG_INVISIBLE;
         String htmlResponse = "";
 
-        if (STABLE_DIFFUSION.equals(prompt.getModelName()) || TITAN_IMAGE.equals(prompt.getModelName())) {
-            imageResponse = "data:image/png;base64, "+response;
+        if (StabilityAI.SDXL_V_1_0.equals(prompt.getModelName()) || Amazon.TITAN_IMAGE_GENERATOR_G1.equals(prompt.getModelName())) {
+            imageResponse = "data:image/png;base64, " + response;
         } else {
             htmlResponse = response
                     .replace("\r", "<br>")
