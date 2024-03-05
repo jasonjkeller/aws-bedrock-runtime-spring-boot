@@ -3,6 +3,10 @@ package com.demo.awsbedrockspringboot.llm.models;
 import com.demo.awsbedrockspringboot.awsbedrockruntime.InvokeModel;
 import org.json.JSONObject;
 
+import java.util.List;
+
+import static com.demo.awsbedrockspringboot.awsbedrockruntime.AwsBedrockRuntimeHelper.MAX_TOKENS;
+
 public class Amazon {
     //  * Amazon
     //    * Titan Embeddings G1 - Text (amazon.titan-embed-text-v1)
@@ -22,52 +26,15 @@ public class Amazon {
 
     public static String invokeAmazonModel(String modelId, String prompt, long seed, Boolean async) {
         if (TITAN_IMAGE_GENERATOR_G1.equals(modelId)) {
-            //            {
-            //                "modelId": "amazon.titan-image-generator-v1",
-            //                    "contentType": "application/json",
-            //                    "accept": "application/json",
-            //                    "body": "{\"textToImageParams\":{\"text\":\"this is where you place your input text\"},\"taskType\":\"TEXT_IMAGE\",\"imageGenerationConfig\":{\"cfgScale\":8,\"seed\":0,\"quality\":\"standard\",\"width\":1024,\"height\":1024,\"numberOfImages\":3}}"
-            //            }
-            return invokeTitanImageGeneratorV1(prompt, seed, async);
+            return invokeTitanImageGeneratorG1(prompt, seed, async);
         } else if (TITAN_EMBEDDINGS_G1_TEXT.equals(modelId)) {
-            //            {
-            //                "modelId": "amazon.titan-embed-text-v1",
-            //                    "contentType": "application/json",
-            //                    "accept": "*/*",
-            //                    "body": "{\"inputText\":\"this is where you place your input text\"}"
-            //            }
-            return invokeTitanEmbedTextV1(prompt, async);
+            return invokeTitanEmbeddingsG1Text(prompt, async);
         } else if (TITAN_MULTIMODAL_EMBEDDINGS_G1.equals(modelId)) {
-            //            {
-            //                "modelId":"amazon.titan-embed-image-v1",
-            //                    "contentType":"application/json",
-            //                    "accept":"application/json",
-            //                    "body":{
-            //                "inputText":"this is where you place your input text",
-            //                        "inputImage":"<base64_image_string>"
-            //            }
-            //            }
-            return invokeTitanEmbedImageV1(prompt, async);
+            return invokeTitanMultimodalEmbeddingsG1(prompt, async);
         } else if (TITAN_TEXT_G1_LITE.equals(modelId)) {
-            // FIXME implement
-
-            //            {
-            //                "modelId":"amazon.titan-text-lite-v1",
-            //                    "contentType":"application/json",
-            //                    "accept":"application/json",
-            //                    "body":
-            //                "{\"inputText\":\"this is where you place your input text\",\"textGenerationConfig\":{\"maxTokenCount\":4096,\"stopSequences\":[],\"temperature\":0,\"topP\":1}}"
-            //            }
+            return invokeTitanTextG1Lite(modelId, prompt, async);
         } else if (TITAN_TEXT_G1_EXPRESS.equals(modelId)) {
-            // FIXME implement
-
-            //            {
-            //                "modelId":"amazon.titan-text-express-v1",
-            //                    "contentType":"application/json",
-            //                    "accept":"application/json",
-            //                    "body":
-            //                "{\"inputText\":\"this is where you place your input text\",\"textGenerationConfig\":{\"maxTokenCount\":8192,\"stopSequences\":[],\"temperature\":0,\"topP\":1}}"
-            //            }
+            return invokeTitanTextG1Express(modelId, prompt, async);
         }
         return "Unsupported Amazon Model: " + modelId;
     }
@@ -80,7 +47,7 @@ public class Amazon {
      * @param seed   The random noise seed for image generation (Range: 0 to 2147483647).
      * @return A Base64-encoded string representing the generated image.
      */
-    public static String invokeTitanImageGeneratorV1(String prompt, long seed, Boolean async) {
+    public static String invokeTitanImageGeneratorG1(String prompt, long seed, Boolean async) {
         /*
          The different model providers have individual request and response formats.
          For the format, ranges, and default values for Titan Image models refer to:
@@ -113,11 +80,12 @@ public class Amazon {
      * @param prompt The prompt that you want Amazon Titan to use for embed generation.
      * @return The generated response.
      */
-    public static String invokeTitanEmbedTextV1(String prompt, Boolean async) {
+    public static String invokeTitanEmbeddingsG1Text(String prompt, Boolean async) {
         /*
          The different model providers have individual request and response formats.
          For the format, ranges, and default values for Titan Embed Text models refer to:
          https://docs.aws.amazon.com/bedrock/latest/userguide/titan-embedding-models.html
+         https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-titan-embed-text.html
         */
 
         String payload = new JSONObject()
@@ -135,11 +103,12 @@ public class Amazon {
      * @param prompt The prompt that you want Amazon Titan to use for image generation.
      * @return A Base64-encoded string representing the generated image.
      */
-    public static String invokeTitanEmbedImageV1(String prompt, Boolean async) {
+    public static String invokeTitanMultimodalEmbeddingsG1(String prompt, Boolean async) {
         /*
          The different model providers have individual request and response formats.
          For the format, ranges, and default values for Titan Embed Image models refer to:
          https://docs.aws.amazon.com/bedrock/latest/userguide/titan-multiemb-models.html
+         https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-titan-embed-mm.html
         */
 
         JSONObject embeddingConfig = new JSONObject()
@@ -153,5 +122,35 @@ public class Amazon {
 
         return InvokeModel.invokeAndGetJSONArray(Amazon.TITAN_MULTIMODAL_EMBEDDINGS_G1, payload, "embedding", async)
                 .toList().toString();
+    }
+
+    public static String invokeTitanTextG1Lite(String modelId, String prompt, Boolean async) {
+        return invokeTitanTextModels(modelId, prompt, async);
+    }
+
+    public static String invokeTitanTextG1Express(String modelId, String prompt, Boolean async) {
+        return invokeTitanTextModels(modelId, prompt, async);
+    }
+
+    public static String invokeTitanTextModels(String modelId, String prompt, Boolean async) {
+        /*
+         The different model providers have individual request and response formats.
+         For the format, ranges, and default values for Titan Embed Image models refer to:
+         https://docs.aws.amazon.com/bedrock/latest/userguide/titan-text-models.html
+         https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-titan-text.html
+        */
+
+        JSONObject textGenerationConfig = new JSONObject()
+                .put("maxTokenCount", MAX_TOKENS)
+                .put("stopSequences", List.of("User:"))
+                .put("temperature", 0.5)
+                .put("topP", 0.9);
+
+        String payload = new JSONObject()
+                .put("inputText", prompt)
+                .put("textGenerationConfig", textGenerationConfig)
+                .toString();
+
+        return InvokeModel.invokeAndGetJSONArray(modelId, payload, "results", async).getJSONObject(0).getString("outputText");
     }
 }

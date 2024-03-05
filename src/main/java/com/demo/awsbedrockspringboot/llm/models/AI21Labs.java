@@ -32,18 +32,19 @@ public class AI21Labs {
     }
 
     private static String invokeJurassic2UltraV1(String modelId, String prompt, Boolean async) {
-        return invokeJurassicGeneric(modelId, prompt, async);
+        return invokeJurassic2TextModels(modelId, prompt, async);
     }
 
     private static String invokeJurassic2MidV1(String modelId, String prompt, Boolean async) {
-        return invokeJurassicGeneric(modelId, prompt, async);
+        return invokeJurassic2TextModels(modelId, prompt, async);
     }
 
-    private static String invokeJurassicGeneric(String modelId, String prompt, Boolean async) {
+    private static String invokeJurassic2TextModels(String modelId, String prompt, Boolean async) {
         /*
           The different model providers have individual request and response formats.
           For the format, ranges, and default values for AI21 Labs Jurassic-2, refer to:
           https://docs.ai21.com/reference/j2-complete-ref
+          https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-jurassic2.html
          */
 
         String payload = new JSONObject()

@@ -30,7 +30,7 @@ public class InvokeModelWithResponseStream {
 
         var payload = new JSONObject()
                 .put("prompt", "Human: " + prompt + " Assistant:")
-                .put("temperature", 0.8)
+                .put("temperature", 0.5)
                 .put("max_tokens_to_sample", 300)
                 .toString();
 

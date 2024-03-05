@@ -61,8 +61,6 @@ public class AwsBedrockRuntimeController {
                 Cohere.EMBED_MULTLINGUAL,
                 Meta.LLAMA_2_CHAT_13_B,
                 Meta.LLAMA_2_CHAT_70_B,
-                Meta.LLAMA_2_13_B,
-                Meta.LLAMA_2_70_B,
                 StabilityAI.SDXL_V_1_0
         );
         model.addAttribute("modelNameList", modelNameList);
@@ -86,6 +84,7 @@ public class AwsBedrockRuntimeController {
         NewRelic.addCustomParameter("llm.test-number", 2);
         NewRelic.addCustomParameter("llm.test-string", "Bye");
         NewRelic.addCustomParameter("llm.test-boolean", false);
+
         // llm.conversation_id can be used to group conversations in NR APM
         NewRelic.addCustomParameter("llm.conversation_id", "submit-prompt-form:" + UUID.randomUUID());
 

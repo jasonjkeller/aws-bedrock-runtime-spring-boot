@@ -37,22 +37,23 @@ public class Anthropic {
     }
 
     private static String invokeClaudeInstantV1(String modelId, String prompt, Boolean async) {
-        return invokeClaudeGeneric(modelId, prompt, async);
+        return invokeClaudeTextModels(modelId, prompt, async);
     }
 
     private static String invokeClaudeV2(String modelId, String prompt, Boolean async) {
-        return invokeClaudeGeneric(modelId, prompt, async);
+        return invokeClaudeTextModels(modelId, prompt, async);
     }
 
     private static String invokeClaudeV21(String modelId, String prompt, Boolean async) {
-        return invokeClaudeGeneric(modelId, prompt, async);
+        return invokeClaudeTextModels(modelId, prompt, async);
     }
 
-    private static String invokeClaudeGeneric(String modelId, String prompt, Boolean async) {
+    private static String invokeClaudeTextModels(String modelId, String prompt, Boolean async) {
          /*
           The different model providers have individual request and response formats.
           For the format, ranges, and default values for Anthropic Claude, refer to:
           https://docs.anthropic.com/claude/reference/complete_post
+          https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-claude.html
          */
 
         // Claude requires you to enclose the prompt as follows:

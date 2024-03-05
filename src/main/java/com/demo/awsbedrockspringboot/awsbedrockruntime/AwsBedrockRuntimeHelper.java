@@ -17,7 +17,7 @@ import software.amazon.awssdk.services.bedrockruntime.model.BedrockRuntimeExcept
  */
 public class AwsBedrockRuntimeHelper {
     public static final int MAX_TOKENS = 1000;
-    public static final String DEFAULT_PROMPT = "What number is after 17?";
+    public static final String DEFAULT_PROMPT = "What is the color of the sky?";
     public static final String INVOKE_MODEL = "InvokeModel";
     public static final String INVOKE_MODEL_ASYNC = "InvokeModel (async)";
     public static final String INVOKE_MODEL_WITH_RESPONSE_STREAM = "InvokeModelWithResponseStream";
