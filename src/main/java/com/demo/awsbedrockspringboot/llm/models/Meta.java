@@ -3,6 +3,8 @@ package com.demo.awsbedrockspringboot.llm.models;
 import com.demo.awsbedrockspringboot.awsbedrockruntime.InvokeModel;
 import org.json.JSONObject;
 
+import static com.demo.awsbedrockspringboot.awsbedrockruntime.AwsBedrockRuntimeHelper.MAX_TOKENS;
+
 public class Meta {
     //  * Meta
     //    * Llama 2 Chat 13B (meta.llama2-13b-chat-v1)
@@ -46,7 +48,7 @@ public class Meta {
 
         String payload = new JSONObject()
                 .put("prompt", prompt)
-                .put("max_gen_len", 512)
+                .put("max_gen_len", MAX_TOKENS)
                 .put("temperature", 0.5)
                 .put("top_p", 0.9)
                 .toString();
