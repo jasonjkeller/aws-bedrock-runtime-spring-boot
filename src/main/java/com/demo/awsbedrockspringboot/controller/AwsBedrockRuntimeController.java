@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static com.demo.awsbedrockspringboot.awsbedrockruntime.AwsBedrockRuntimeHelper.INVOKE_MODEL;
 import static com.demo.awsbedrockspringboot.awsbedrockruntime.AwsBedrockRuntimeHelper.INVOKE_MODEL_ASYNC;
@@ -88,12 +90,8 @@ public class AwsBedrockRuntimeController {
         // llm.conversation_id can be used to group conversations in NR APM
         NewRelic.addCustomParameter("llm.conversation_id", "submit-prompt-form:" + UUID.randomUUID());
 
-        String response = switch (prompt.getInvokeType()) {
-            case INVOKE_MODEL -> AwsBedrockRuntimeHelper.invoke(prompt.getModelName(), prompt.getPrompt());
-            case INVOKE_MODEL_ASYNC -> AwsBedrockRuntimeHelper.invokeAsync(prompt.getModelName(), prompt.getPrompt());
-            case INVOKE_MODEL_WITH_RESPONSE_STREAM -> AwsBedrockRuntimeHelper.invokeWithResponseStream(prompt.getModelName(), prompt.getPrompt());
-            default -> "";
-        };
+        String response = invokeModel(prompt);
+//        response += "\n\nResponse 2:\n\n" + invokeModel(prompt); // make another request to the LLM model
 
         System.out.print("Generated response:");
         System.out.println(response);
@@ -111,7 +109,25 @@ public class AwsBedrockRuntimeController {
         model.addAttribute("imageBytes", imageResponse);
         model.addAttribute("response", htmlResponse);
 
+        recordLlmFeedback(NewRelic.getAgent().getTraceMetadata().getTraceId());
+
         return "prompt-response";
     }
 
+    private static void recordLlmFeedback(String traceId) {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(() -> {
+            System.out.println("\nRecording LLM feedback event for trace: " + traceId);
+            // TODO add a call to the feedback API here
+        });
+    }
+
+    private static String invokeModel(Prompt prompt) {
+        return switch (prompt.getInvokeType()) {
+            case INVOKE_MODEL -> AwsBedrockRuntimeHelper.invoke(prompt.getModelName(), prompt.getPrompt());
+            case INVOKE_MODEL_ASYNC -> AwsBedrockRuntimeHelper.invokeAsync(prompt.getModelName(), prompt.getPrompt());
+            case INVOKE_MODEL_WITH_RESPONSE_STREAM -> AwsBedrockRuntimeHelper.invokeWithResponseStream(prompt.getModelName(), prompt.getPrompt());
+            default -> "";
+        };
+    }
 }
